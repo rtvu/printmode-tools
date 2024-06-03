@@ -1,0 +1,6 @@
+{
+  "name": "printmode-tools",
+  "dockerComposeFile": "../docker/compose.yaml",
+  "service": "main",
+  "workspaceFolder": "/home/user/workspace"
+}
