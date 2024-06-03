@@ -1,3 +1,16 @@
 # Local
 local/
 .DS_Store
+
+# Yarn
+node_modules/
+
+.yarn/*
+!.yarn/releases
+!.yarn/plugins
+
+# Vite
+dist/
+
+# Vitest
+coverage/

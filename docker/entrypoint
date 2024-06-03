@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+source ${HOME}/.nvm/nvm.sh
+corepack install &> /dev/null
+
+exec "$@"
