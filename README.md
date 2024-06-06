@@ -2,6 +2,10 @@
 
 React application to diagram printer carriage configurations and printhead nozzle utilizations.
 
+# Demo
+
+Try out the application: [printmode-tools](https://rtvu.github.io/printmode-tools/)
+
 # Getting Started
 
 To run locally:

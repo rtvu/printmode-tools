@@ -2,6 +2,7 @@
   "name": "printmode-tools",
   "version": "0.0.1",
   "description": "React application to diagram printer carriage configurations and printhead nozzle utilizations.",
+  "homepage": "https://rtvu.github.io/printmode-tools/",
   "type": "module",
   "scripts": {
     "vite": "vite",
@@ -12,6 +13,8 @@
     "vitest:watch": "vitest",
     "vitest:coverage": "vitest --coverage --coverage.reportsDirectory=\"../coverage\"",
     "vitest:clean": "rm -rf coverage",
+    "gh-pages:build": "vite build --base=\"/printmode-tools/\" --outDir=\"../dist\"",
+    "gh-pages:deploy": "yarn run gh-pages:build && gh-pages -d dist",
     "format": "prettier --write \"src/**/*.{html,js,jsx,ts,tsx}\"",
     "lint": "eslint --quiet \"src/**/*.{js,jsx,ts,tsx}\"",
     "typecheck": "tsc --noEmit"
@@ -24,6 +27,7 @@
     "@testing-library/jest-dom": "^6.4.5",
     "@testing-library/react": "^15.0.7",
     "@types/bootstrap": "^5",
+    "@types/gh-pages": "^6",
     "@types/node": "^20.12.12",
     "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
@@ -38,6 +42,7 @@
     "eslint-plugin-jsx-a11y": "^6.8.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "gh-pages": "^6.1.1",
     "jsdom": "^24.1.0",
     "prettier": "^3.2.5",
     "sass": "^1.76.0",
