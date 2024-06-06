@@ -16,6 +16,7 @@ $enable-validation-icons: false;
 // Appending additonal values to default
 $font-family-sans-serif: join("Fira Sans", $font-family-sans-serif, $separator: comma);
 $font-family-monospace: join("Fira Mono", $font-family-monospace, $separator: comma);
+$tooltip-bg: #495057;
 
 @import "../node_modules/bootstrap/scss/bootstrap";
 
