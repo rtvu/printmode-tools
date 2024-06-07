@@ -7,3 +7,9 @@ export function setNot<T>(assertion: Assertion<T>, isOn = false) {
     return assertion;
   }
 }
+
+export function getRunAssertIs<T>(assertIs: (value: T) => void, value: T): () => void {
+  return () => {
+    assertIs(value);
+  };
+}
