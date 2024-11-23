@@ -1,0 +1,11 @@
+name: printmode-tools
+services:
+  main:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    hostname: printmode-tools
+    stdin_open: true
+    tty: true
+    volumes:
+      - ..:/home/user/workspace
