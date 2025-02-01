@@ -15,7 +15,7 @@
         "prettier.prettierPath": "./node_modules/prettier",
         "prettier.requireConfig": true
       },
-      "extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+      "extensions": ["arturock.gitstash", "dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
     }
   }
 }

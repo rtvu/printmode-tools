@@ -4,7 +4,13 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
+    environment:
+      - VITE_PORT=${VITE_PORT}
+      - VITE_PREVIEW_PORT=${VITE_PREVIEW_PORT}
     hostname: printmode-tools
+    ports:
+      - "${VITE_PORT}:${VITE_PORT}"
+      - "${VITE_PREVIEW_PORT}:${VITE_PREVIEW_PORT}"
     stdin_open: true
     tty: true
     volumes:

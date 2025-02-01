@@ -1,11 +1,15 @@
 {
-  "name": "project-template",
+  "name": "printmode-tools",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1-dev",
+  "description": "React application to diagram printer carriage configurations and printhead nozzle utilizations.",
+  "homepage": "https://rtvu.github.io/printmode-tools/",
+  "author": "Ryan Vu",
+  "license": "MIT",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "tsc -b && vite build",
+    "dev": "vite",
     "lint": "eslint .",
     "preview": "vite preview"
   },
@@ -15,6 +19,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@types/node": "^22.13.0",
     "@types/react": "^18.3.18",
     "@types/react-dom": "^18.3.5",
     "@vitejs/plugin-react-swc": "^3.5.0",
