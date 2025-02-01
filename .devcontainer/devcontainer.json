@@ -12,10 +12,18 @@
           "strings": "on"
         },
         "editor.tabSize": 2,
+        "files.associations": {
+          "*.css": "tailwindcss"
+        },
         "prettier.prettierPath": "./node_modules/prettier",
         "prettier.requireConfig": true
       },
-      "extensions": ["arturock.gitstash", "dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+      "extensions": [
+        "arturock.gitstash",
+        "bradlc.vscode-tailwindcss",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode"
+      ]
     }
   }
 }
