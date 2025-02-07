@@ -34,6 +34,7 @@ export default tseslint.config(
       ...react.configs["jsx-runtime"].rules,
       ...reactHooks.configs.recommended.rules,
       "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
+      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
     },
   },
   prettier,
