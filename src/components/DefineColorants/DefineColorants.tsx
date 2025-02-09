@@ -245,7 +245,7 @@ export function DefineColorants() {
   };
 
   return (
-    <div className="mx-auto mt-3 max-w-[600px]">
+    <div className="mx-auto mt-3 max-w-[600px] min-w-[450px]">
       <ColorToColorantsInputs isHeader />
       <SortableList
         items={entries}
