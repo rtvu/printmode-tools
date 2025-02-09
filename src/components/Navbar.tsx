@@ -2,6 +2,8 @@ import { MoonIcon, SunIcon } from "@heroicons/react/24/outline";
 import { useLocalStorage } from "@uidotdev/usehooks";
 import { useEffect } from "react";
 
+import { ModalManager } from "./ModalManager";
+
 export function Navbar() {
   const [isDarkTheme, setIsDarkTheme] = useLocalStorage<boolean>("isDarkTheme", false);
 
@@ -24,6 +26,7 @@ export function Navbar() {
       <div className="navbar-start"></div>
       <div className="navbar-center text-base-100 text-5xl">Printmode Tools</div>
       <div className="navbar-end">
+        <ModalManager className="btn btn-soft btn-xs btn-square mx-3 !text-base font-bold" />
         <label className="toggle border-base-100 text-base-content">
           <input
             type="checkbox"
