@@ -1,9 +1,16 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { v4 as uuid } from "uuid";
 
 import { HexColor, toHexColor } from "../../common/color";
 import { Colorant, isColorant } from "../../common/colorant";
 import { DefaultMap } from "../../common/DefaultMap";
+import { reduceIterable } from "../../common/utilities";
+import {
+  ColorantsDefinition,
+  clearColorantsDefinitions,
+  updateColorantsDefinitions,
+} from "../../state/colorantDictionary/colorantDictionarySlice";
+import { useAppDispatch, useAppSelector } from "../../state/hooks";
 import { SortableList, SortableListItem } from "../SortableList";
 import { ColorToColorantsInputs, ColorToColorantsInputsProps } from "./components/ColorToColorantsInputs";
 
@@ -38,7 +45,7 @@ function processColor(entry: Entry, errors: Errors, seenColors: Record<HexColor,
   }
 }
 
-const processColorants = (entry: Entry, errors: Errors, seenColorants: Record<Colorant, Id>): void => {
+function processColorants(entry: Entry, errors: Errors, seenColorants: Record<Colorant, Id>): void {
   const colorants = entry.colorants.split(",").map((colorant) => colorant.trim());
   for (const colorant of colorants) {
     if (colorant !== "") {
@@ -56,24 +63,104 @@ const processColorants = (entry: Entry, errors: Errors, seenColorants: Record<Co
       errors.hasEmptyColorants.add(entry.id);
     }
   }
-};
+}
 
-const processEntries = (entries: Entry[], errors: Errors): void => {
+function processEntries(entries: Entry[], errors: Errors): void {
   const seenColors: Record<HexColor, Id> = {};
   const seenColorants: Record<Colorant, Id> = {};
   for (const entry of entries) {
     processColor(entry, errors, seenColors);
     processColorants(entry, errors, seenColorants);
   }
-};
+}
 
-const initialEntry: Entry = { id: uuid(), color: "#ffffff", colorants: "", lastColor: "#ffffff" };
+function checkErrors(errors: Errors): boolean {
+  const invalidColorantsSize = reduceIterable(
+    errors.invalidColorants,
+    (accumulator, currentElement) => accumulator + currentElement[1].size,
+    0,
+  );
+
+  const nonUniqueColorantsSize = reduceIterable(
+    errors.nonUniqueColorants,
+    (accumulator, currentElement) => accumulator + currentElement[1].size,
+    0,
+  );
+
+  return (
+    errors.invalidColors.size !== 0 ||
+    errors.nonUniqueColors.size !== 0 ||
+    invalidColorantsSize !== 0 ||
+    nonUniqueColorantsSize !== 0 ||
+    errors.hasEmptyColorants.size !== 0
+  );
+}
+
+function newEntry(color = "#ffffff", colorants = "", lastColor = "#ffffff"): Entry {
+  return { id: uuid(), color, colorants, lastColor };
+}
+
+function restoreStoredSerializedColorantsDefinitions(
+  storedSerializedColorantsDefinitions: string,
+  setEntries: Dispatch<SetStateAction<Entry[]>>,
+): void {
+  const colorantsDefinitions = JSON.parse(storedSerializedColorantsDefinitions) as ColorantsDefinition[];
+  if (colorantsDefinitions.length > 0) {
+    setEntries(
+      colorantsDefinitions.map(({ color, colorants }) => {
+        return newEntry(color, colorants, color);
+      }),
+    );
+  } else {
+    setEntries([newEntry()]);
+  }
+}
 
 export function DefineColorants() {
-  const [entries, setEntries] = useState<Entry[]>([initialEntry]);
+  const storedSerializedColorantsDefinitions = useAppSelector(
+    (state) => state.colorantDictionary.serializedColorantsDefinitions,
+  );
+  const dispatch = useAppDispatch();
 
-  const onAddEntry = (): void => {
-    setEntries((entries) => [...entries, { id: uuid(), color: "#ffffff", colorants: "", lastColor: "#ffffff" }]);
+  const [entries, setEntries] = useState<Entry[]>([]);
+
+  const serializedFormattedColorantsDefinitions = JSON.stringify(
+    entries.map(({ color, colorants }) => {
+      const formattedColor = toHexColor(color);
+      const formattedColorants = colorants
+        .split(",")
+        .map((colorant) => colorant.trim())
+        .sort()
+        .join(", ");
+      return { color: formattedColor, colorants: formattedColorants };
+    }),
+  );
+
+  const serializedColorantsDefinitions = JSON.stringify(
+    entries.map(({ color, colorants }) => {
+      return { color, colorants };
+    }),
+  );
+
+  useEffect(() => {
+    restoreStoredSerializedColorantsDefinitions(storedSerializedColorantsDefinitions, setEntries);
+  }, [storedSerializedColorantsDefinitions, setEntries]);
+
+  const onClickAddEntry = (): void => {
+    setEntries((entries) => [...entries, newEntry()]);
+  };
+
+  const onClickSetDefinitions = (): void => {
+    void dispatch(updateColorantsDefinitions(serializedFormattedColorantsDefinitions));
+  };
+
+  const onClickResetDefinitions = (): void => {
+    restoreStoredSerializedColorantsDefinitions(storedSerializedColorantsDefinitions, setEntries);
+  };
+
+  const onClickClearDefinitions = (): void => {
+    setEntries([newEntry()]);
+    void dispatch(clearColorantsDefinitions());
   };
 
   const getOnChangeColorEntry = (id: Id): ((color: string) => void) => {
@@ -114,7 +201,7 @@ export function DefineColorants() {
       setEntries((entries) => {
         entries = entries.filter(({ id: currentId }) => currentId !== id);
         if (entries.length === 0) {
-          entries = [{ id: uuid(), color: "#ffffff", colorants: "", lastColor: "#ffffff" }];
+          entries = [newEntry()];
         }
 
         return entries;
@@ -169,9 +256,31 @@ export function DefineColorants() {
           </SortableListItem>
         )}
       />
-      <div>
-        <button type="button" className="btn btn-sm" onClick={onAddEntry}>
-          Add Entry
+      <div className="flex">
+        <button type="button" className="btn btn-sm mr-3" onClick={onClickAddEntry}>
+          Add
+        </button>
+        <button
+          type="button"
+          className="btn btn-sm mr-3"
+          disabled={checkErrors(errors) || storedSerializedColorantsDefinitions === serializedColorantsDefinitions}
+          onClick={onClickSetDefinitions}
+        >
+          Set
+        </button>
+        <button
+          type="button"
+          className="btn btn-sm mr-auto"
+          disabled={
+            storedSerializedColorantsDefinitions === "[]" ||
+            storedSerializedColorantsDefinitions === serializedColorantsDefinitions
+          }
+          onClick={onClickResetDefinitions}
+        >
+          Reset
+        </button>
+        <button type="button" className="btn btn-sm ml-3" onClick={onClickClearDefinitions}>
+          Clear
         </button>
       </div>
     </div>
