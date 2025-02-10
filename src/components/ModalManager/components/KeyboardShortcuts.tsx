@@ -3,6 +3,7 @@ import { Fragment } from "react";
 const mappings = [
   ["Ctrl + I", "Toggle Dark Mode"],
   ["Ctrl + Shift + /", "Help"],
+  ["Ctrl + Shift + Enter", "Colorant Dictionary"],
 ];
 
 export function KeyboardShortcuts() {

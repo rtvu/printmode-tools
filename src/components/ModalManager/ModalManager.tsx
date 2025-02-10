@@ -1,8 +1,9 @@
 import { Dispatch, Fragment, ReactNode, SetStateAction, useEffect, useId, useState } from "react";
 
+import { ColorantDictionary } from "./components/ColorantDictionary";
 import { KeyboardShortcuts } from "./components/KeyboardShortcuts";
 
-type ModalContent = "KeyboardShortcuts";
+type ModalContent = "KeyboardShortcuts" | "ColorantDictionary";
 
 function showModal(id: string, modalContent: ModalContent, setState: Dispatch<SetStateAction<ModalContent>>) {
   const element = document.getElementById("modal-" + id);
@@ -27,10 +28,18 @@ export function ModalManager({ className }: ModalManagerProps) {
       }
     };
 
+    const colorantDictionaryHandler = (event: KeyboardEvent) => {
+      if (!event.altKey && event.ctrlKey && !event.metaKey && event.shiftKey && event.key === "Enter") {
+        showModal(id, "ColorantDictionary", setModalContent);
+      }
+    };
+
     window.addEventListener("keydown", keyboardShortcutsHandler);
+    window.addEventListener("keydown", colorantDictionaryHandler);
 
     return () => {
       window.removeEventListener("keydown", keyboardShortcutsHandler);
+      window.removeEventListener("keydown", colorantDictionaryHandler);
     };
   }, [id, setModalContent]);
 
@@ -39,8 +48,8 @@ export function ModalManager({ className }: ModalManagerProps) {
   };
 
   let renderedModal: ReactNode = <KeyboardShortcuts />;
-  if (modalContent !== "KeyboardShortcuts") {
-    renderedModal = null;
+  if (modalContent === "ColorantDictionary") {
+    renderedModal = <ColorantDictionary />;
   }
 
   return (

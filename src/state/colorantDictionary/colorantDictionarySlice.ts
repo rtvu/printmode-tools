@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 import { HexColor } from "../../common/color";
 import { Colorant } from "../../common/colorant";
+import DefaultMap from "../../common/DefaultMap";
 import { getItem, removeItem, setItem } from "../../common/localStorage";
 
 const LOCAL_STORAGE_ITEM = "ColorantsDefinitions";
@@ -62,8 +63,30 @@ function updateColorantToColor(colorantToColor: ColorantToColor, colorantsDefini
 const defaultColorantToColor: ColorantToColor = {};
 updateColorantToColor(defaultColorantToColor, defaultColorantsDefinitions);
 
+export type ColorToColorants = [HexColor, Colorant[]][];
+
+function toColorToColorants(colorantToColor: ColorantToColor): ColorToColorants {
+  const temporaryColorToColorants = new DefaultMap<HexColor, Set<Colorant>>(() => new Set());
+  const temporaryColors = new Set<HexColor>();
+
+  for (const [colorant, color] of Object.entries(colorantToColor)) {
+    temporaryColors.add(color);
+    temporaryColorToColorants.get(color).add(colorant as Colorant);
+  }
+
+  const colorToColorants: ColorToColorants = [];
+  const colors = [...temporaryColors].sort();
+  for (const color of colors) {
+    const colorants = [...temporaryColorToColorants.get(color)].sort();
+    colorToColorants.push([color, colorants]);
+  }
+
+  return colorToColorants;
+}
+
 export type ColorantDictionaryState = {
   colorantToColor: ColorantToColor;
+  colorToColorants: ColorToColorants;
   serializedColorantsDefinitions: string;
 };
 
@@ -73,8 +96,11 @@ function updateColorantDictionaryState(serializedColorantsDefinitions: string): 
   const colorantToColor = { ...defaultColorantToColor };
   updateColorantToColor(colorantToColor, colorantsDefinitions);
 
+  const colorToColorants = toColorToColorants(colorantToColor);
+
   return {
     colorantToColor,
+    colorToColorants,
     serializedColorantsDefinitions,
   };
 }
