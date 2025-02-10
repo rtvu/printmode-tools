@@ -38,7 +38,7 @@ export function ColorantDictionary() {
     <Fragment>
       <h3 className="bg-base-200 border-base-300 border-b py-2 text-center text-xl font-bold">Colorant Dictionary</h3>
       <div className="m-5">
-        <div className="mx-auto max-w-[600px]">
+        <div className="mx-auto max-w-[600px] min-w-[450px]">
           <div className="flex">
             <label className="mr-auto">Filter</label>
             <label className="cursor-pointer">
