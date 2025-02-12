@@ -4,6 +4,7 @@ const mappings = [
   ["Ctrl + I", "Toggle Dark Mode"],
   ["Ctrl + Shift + /", "Help"],
   ["Ctrl + Shift + Enter", "Colorant Dictionary"],
+  ["Ctrl + Shift + ←/→", "Navigate Tabs"],
 ];
 
 export function KeyboardShortcuts() {
